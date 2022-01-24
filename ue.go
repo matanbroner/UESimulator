@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/matanbroner/UESimulator/src/app"
 	"github.com/matanbroner/UESimulator/src/ue/logger"
 	"github.com/matanbroner/UESimulator/src/ue/ue_service"
 	"github.com/matanbroner/UESimulator/src/ue/version"
@@ -33,7 +32,9 @@ func main() {
 }
 
 func action(c *cli.Context) {
-	app.AppInitializeWillInitialize(c.String("free5gccfg"))
+	// TODO: this just initializes loggers based on a Free5GC config file which ships with my5GCore
+	// We can probably just add our own loggers down the line
+	// app.AppInitializeWillInitialize(c.String("free5gccfg"))
 	UE.Initialize(c)
 	UE.Start()
 }
