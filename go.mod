@@ -3,24 +3,21 @@ module free5gc
 go 1.14
 
 require (
-	github.com/free5gc/free5gc-stage-3 v3.0.0+incompatible // TODO: this is only needed for nasTestPacket. Figure out how to get rid of this...
-	github.com/antonfisher/nested-logrus-formatter v1.3.1
 	github.com/calee0219/fatal v0.0.1
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/free5gc/CommonConsumerTestData v1.0.0
 	github.com/free5gc/UeauCommon v1.0.0
 	github.com/free5gc/aper v1.0.2
-	github.com/free5gc/fsm v1.0.0 // indirect
-	github.com/free5gc/logger_conf v1.0.0
-	github.com/free5gc/logger_util v1.0.0
+	github.com/free5gc/fsm v1.0.0
+	github.com/free5gc/http2_util v1.0.0
 	github.com/free5gc/milenage v1.0.0
 	github.com/free5gc/n3iwf v1.3.0
 	github.com/free5gc/nas v1.0.3
 	github.com/free5gc/ngap v1.0.4
 	github.com/free5gc/openapi v1.0.3
+	github.com/free5gc/path_util v1.0.0
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.4
-	github.com/pkg/errors v0.9.1
+	github.com/go-ping/ping v0.0.0-20211130115550-779d1e919534
 	github.com/sirupsen/logrus v1.8.1
 	github.com/urfave/cli v1.22.5
 	github.com/vishvananda/netlink v1.1.0

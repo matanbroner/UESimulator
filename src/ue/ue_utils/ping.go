@@ -1,19 +1,19 @@
 package ue_utils
 
 import (
-	"github.com/sparrc/go-ping"
-	"time"
-	"github.com/sirupsen/logrus"
 	"free5gc/src/ue/logger"
+	"github.com/go-ping/ping"
+	"github.com/sirupsen/logrus"
+	"time"
 )
 
 var log *logrus.Entry
 
-func init(){
+func init() {
 	log = logger.AppLog
 }
 
-func Ping(srcAddr, destAddr string){
+func Ping(srcAddr, destAddr string) {
 	// Ping remote
 	pinger, err := ping.NewPinger(destAddr)
 	if err != nil {
@@ -48,7 +48,7 @@ func Ping(srcAddr, destAddr string){
 	stats := pinger.Statistics()
 	if stats.PacketsSent != stats.PacketsRecv {
 		log.Fatal("Ping Failed")
-	}else{
+	} else {
 		log.Infoln("Ping Succeed")
 	}
 }
