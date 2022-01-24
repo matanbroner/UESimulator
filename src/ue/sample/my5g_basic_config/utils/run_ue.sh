@@ -2,7 +2,7 @@
 
 # use some fixed parameters for testing (milenage test set 19)
 cd ../../../
-go build -o ./bin/ue -x ./src/ue/ue.go
+go build -o ./bin/ue -x ./src/ue.go
 sudo ip netns exec UEns ./bin/ue  #--ping=1 #\
 #                                  --plmnid=010203 \
 #                                  --supi=2089300007487 \
