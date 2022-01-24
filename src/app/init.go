@@ -20,10 +20,13 @@ type NetworkFunction interface {
 	Start()
 }
 
+const default_config_file = "free5gc/config/free5GC.conf"
+
 func AppInitializeWillInitialize(cfgPath string) {
 
 	if cfgPath == "" {
-		ContextSelf().Path = path_util.Free5gcPath("free5gc/config/free5GC.conf")
+		fmt.Println("Using default config file location: ", default_config_file)
+		ContextSelf().Path = path_util.Free5gcPath(default_config_file)
 	} else {
 		ContextSelf().Path = path_util.Free5gcPath(cfgPath)
 	}
