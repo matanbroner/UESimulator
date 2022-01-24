@@ -2,8 +2,8 @@ package ue_context
 
 import (
 	"crypto/rsa"
-	"free5gc_ue/src/ue/logger"
-	"free5gc_ue/src/ue/version"
+	"free5gc/ue/src/ue/logger"
+	"free5gc/ue/src/ue/version"
 	"github.com/free5gc/CommonConsumerTestData/UDM/TestGenAuthData"
 	"github.com/free5gc/ngap/ngapType"
 	"github.com/free5gc/openapi/models"

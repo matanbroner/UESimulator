@@ -1,10 +1,10 @@
 package main
 
 import (
-	"free5gc_ue/src/app"
-	"free5gc_ue/src/ue/logger"
-	"free5gc_ue/src/ue/ue_service"
-	"free5gc_ue/src/ue/version"
+	"free5gc/ue/src/app"
+	"free5gc/ue/src/ue/logger"
+	"free5gc/ue/src/ue/ue_service"
+	"free5gc/ue/src/ue/version"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 	"os"
