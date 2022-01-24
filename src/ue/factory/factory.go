@@ -6,7 +6,7 @@ package factory
 
 import (
 	"fmt"
-	"free5gc/ue/src/ue/logger"
+	"free5gc_ue/src/ue/logger"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 )

@@ -1,4 +1,4 @@
-module free5gc/ue
+module free5gc_ue
 
 go 1.14
 
