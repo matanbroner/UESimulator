@@ -1,10 +1,10 @@
 package main
 
 import (
-	"free5gc_ue/src/app"
-	"free5gc_ue/src/ue/logger"
-	"free5gc_ue/src/ue/ue_service"
-	"free5gc_ue/src/ue/version"
+	"github.com/matanbroner/UESimulator/src/app"
+	"github.com/matanbroner/UESimulator/src/ue/logger"
+	"github.com/matanbroner/UESimulator/src/ue/ue_service"
+	"github.com/matanbroner/UESimulator/src/ue/version"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 	"os"
@@ -18,16 +18,16 @@ func init() {
 }
 
 func main() {
-	app := cli.NewApp()
-	app.Name = "ue"
-	app.Usage = "Usage: --uecfg config yaml file"
-	app.Action = action
-	app.Flags = UE.GetCliCmd()
+	cliApp := cli.NewApp()
+	cliApp.Name = "ue"
+	cliApp.Usage = "Usage: --uecfg config yaml file"
+	cliApp.Action = action
+	cliApp.Flags = UE.GetCliCmd()
 
-	appLog.Infoln(app.Name)
+	appLog.Infoln(cliApp.Name)
 	appLog.Infoln("UE version: ", version.GetVersion())
 
-	if err := app.Run(os.Args); err != nil {
+	if err := cliApp.Run(os.Args); err != nil {
 		logger.AppLog.Errorf("UE Run error: %v", err)
 	}
 }
