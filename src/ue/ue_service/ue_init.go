@@ -74,6 +74,7 @@ func (*UE) Initialize(c *cli.Context) {
 
 	// TODO: make this whole setup more clean, there should be an env set for where to search for config files
 	if config.uecfg != "" {
+		fmt.Println("Using default UE config file")
 		factory.InitConfigFactory("./config/" + config.uecfg)
 	} else {
 		factory.InitConfigFactory(ue_util.DefaultUeConfigPath)
