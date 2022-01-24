@@ -10,14 +10,14 @@ import (
 	"os"
 )
 
-var UE =  &ue_service.UE{}
+var UE = &ue_service.UE{}
 var appLog *logrus.Entry
 
 func init() {
 	appLog = logger.AppLog
 }
 
-func main(){
+func main() {
 	app := cli.NewApp()
 	app.Name = "ue"
 	app.Usage = "Usage: --uecfg config yaml file"
@@ -32,7 +32,7 @@ func main(){
 	}
 }
 
-func action(c *cli.Context){
+func action(c *cli.Context) {
 	app.AppInitializeWillInitialize(c.String("free5gccfg"))
 	UE.Initialize(c)
 	UE.Start()
