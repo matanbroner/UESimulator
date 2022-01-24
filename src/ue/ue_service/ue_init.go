@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/free5gc/http2_util"
-	"github.com/free5gc/path_util"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/matanbroner/UESimulator/src/ue/factory"
@@ -73,8 +72,9 @@ func (*UE) Initialize(c *cli.Context) {
 
 	fmt.Println(c.Args())
 
+	// TODO: make this whole setup more clean, there should be an env set for where to search for config files
 	if config.uecfg != "" {
-		factory.InitConfigFactory(path_util.Free5gcPath(config.uecfg))
+		factory.InitConfigFactory("./config/" + config.uecfg)
 	} else {
 		factory.InitConfigFactory(ue_util.DefaultUeConfigPath)
 	}
