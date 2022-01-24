@@ -1,14 +1,14 @@
 package ue_handler
 
 import (
-	"free5gc/src/ue/ue_context"
+	"free5gc_ue/src/ue/ue_context"
 	"time"
 
 	"github.com/sirupsen/logrus"
 
-	"free5gc/src/ue/logger"
-	ue_procedures "free5gc/src/ue/ue_actions"
-	"free5gc/src/ue/ue_handler/ue_message"
+	"free5gc_ue/src/ue/logger"
+	ue_procedures "free5gc_ue/src/ue/ue_actions"
+	"free5gc_ue/src/ue/ue_handler/ue_message"
 )
 
 var handlerLog *logrus.Entry

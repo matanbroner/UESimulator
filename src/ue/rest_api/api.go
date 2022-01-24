@@ -1,10 +1,10 @@
 package rest_api
 
 import (
-	"free5gc/src/ue/logger"
-	ue_procedures "free5gc/src/ue/ue_actions"
-	"free5gc/src/ue/ue_context"
-	"free5gc/src/ue/ue_handler/ue_message"
+	"free5gc_ue/src/ue/logger"
+	ue_procedures "free5gc_ue/src/ue/ue_actions"
+	"free5gc_ue/src/ue/ue_context"
+	"free5gc_ue/src/ue/ue_handler/ue_message"
 	"github.com/free5gc/openapi/models"
 	"github.com/gin-gonic/gin"
 	"net/http"

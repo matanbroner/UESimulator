@@ -4,9 +4,9 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"free5gc/src/ue/logger"
-	"free5gc/src/ue/ue_context"
-	"free5gc/src/ue/ue_nas"
+	"free5gc_ue/src/ue/logger"
+	"free5gc_ue/src/ue/ue_context"
+	"free5gc_ue/src/ue/ue_nas"
 	"github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink"
 	"golang.org/x/sys/unix"
@@ -1126,8 +1126,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	defer func() {
 		_ = netlink.AddrDel(linkIPSec, linkIPSecAddr)
-		// NOTE (Matan): The XfrmPolicyFlush() function flags on Mac
-		// My theory is that since it is sourced from netlink's xfrm_policy_linux, it may not be exposed on Mac
+		// NOTE (Matan): The XfrmPolicyFlush() function flags on Mac due to OS mismatch, can be ignored
 		_ = netlink.XfrmPolicyFlush()
 		_ = netlink.XfrmStateFlush(netlink.XFRM_PROTO_IPSEC_ANY)
 	}()

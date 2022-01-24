@@ -6,9 +6,9 @@ package factory
 
 import (
 	"fmt"
-	"io/ioutil"
+	"free5gc_ue/src/ue/logger"
 	"gopkg.in/yaml.v2"
-	"free5gc/src/ue/logger"
+	"io/ioutil"
 )
 
 var UeConfig Config

@@ -2,7 +2,7 @@ package app_test
 
 import (
 	"fmt"
-	"free5gc/src/app"
+	"free5gc_ue/src/app"
 	"testing"
 )
 
