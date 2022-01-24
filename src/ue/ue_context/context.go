@@ -2,11 +2,11 @@ package ue_context
 
 import (
 	"crypto/rsa"
-	"free5gc_ue/src/ue/logger"
-	"free5gc_ue/src/ue/version"
 	"github.com/free5gc/CommonConsumerTestData/UDM/TestGenAuthData"
 	"github.com/free5gc/ngap/ngapType"
 	"github.com/free5gc/openapi/models"
+	"github.com/matanbroner/UESimulator/src/ue/logger"
+	"github.com/matanbroner/UESimulator/src/ue/version"
 	"github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink"
 	"golang.org/x/net/ipv4"

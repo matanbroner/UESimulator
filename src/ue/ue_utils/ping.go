@@ -1,8 +1,8 @@
 package ue_utils
 
 import (
-	"free5gc_ue/src/ue/logger"
 	"github.com/go-ping/ping"
+	"github.com/matanbroner/UESimulator/src/ue/logger"
 	"github.com/sirupsen/logrus"
 	"time"
 )

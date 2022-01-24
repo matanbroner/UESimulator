@@ -4,9 +4,9 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"free5gc_ue/src/ue/n3iwf_handler/n3iwf_message"
 	ike_message "github.com/free5gc/n3iwf/ike/message"
 	"github.com/free5gc/ngap/ngapType"
+	"github.com/matanbroner/UESimulator/src/ue/n3iwf_handler/n3iwf_message"
 	"net"
 
 	gtpv1 "github.com/wmnsk/go-gtp/v1"

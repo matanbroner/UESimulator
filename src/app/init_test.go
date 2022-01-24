@@ -2,7 +2,7 @@ package app_test
 
 import (
 	"fmt"
-	"free5gc_ue/src/app"
+	"github.com/matanbroner/UESimulator/src/app"
 	"testing"
 )
 
