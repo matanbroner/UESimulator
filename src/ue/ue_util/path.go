@@ -11,4 +11,4 @@ var UePemPath = path_util.Free5gcPath("free5gc/support/TLS/ue.pem")
 var UeKeyPath = path_util.Free5gcPath("free5gc/support/TLS/ue.key")
 
 // DefaultUeConfigPath TODO: #LABORA Add free5gc/config/uecfg.conf
-var DefaultUeConfigPath = path_util.Free5gcPath("./config/uecfg.conf")
+var DefaultUeConfigPath = "./config/uecfg.conf"
