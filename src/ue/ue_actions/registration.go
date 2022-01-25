@@ -101,7 +101,7 @@ func getAuthSubscription2() (authSubs models.AuthenticationSubscription) {
 }
 
 func setupUDPSocket(ctx *ue_context.UEContext, log *logrus.Entry) *net.UDPConn {
-	bindAddr := fmt.Sprintf("%s:=501", ctx.IKEBindAddress)
+	bindAddr := fmt.Sprintf("%s:501", ctx.IKEBindAddress)
 	udpAddr, err := net.ResolveUDPAddr("udp", bindAddr)
 	if err != nil {
 		log.Fatal("Resolve UDP address failed", err)
