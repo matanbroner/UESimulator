@@ -564,6 +564,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		ue.AuthenticationSubs = getAuthSubscription()
 		ue.AmfUeNgapId = 1
 		UE = "ue"
+		fmt.Printf("SUPI converted: %s", mobileIdentity5GS.GetSUCI())
 	}
 
 	n3iwfUDPAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:500", ueContext.N3IWFIpAddress))
