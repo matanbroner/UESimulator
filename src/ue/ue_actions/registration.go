@@ -538,6 +538,7 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 }
 
 func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
+	fmt.Println("Register with SUPI/SUCI: ", ueContext.SUPIorSUCI)
 	// New UE
 	ue := NewRanUeContext(fmt.Sprintf("imsi-%s", ueContext.SUPIorSUCI), 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2,
 		models.AccessType_NON_3_GPP_ACCESS)
