@@ -4,7 +4,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/google/martian/v3/log"
 	"github.com/matanbroner/UESimulator/src/ue/logger"
 	"github.com/matanbroner/UESimulator/src/ue/ue_context"
 	"github.com/matanbroner/UESimulator/src/ue/ue_nas"
@@ -539,7 +538,7 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 }
 
 func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
-	log.Infof("Register with SUPI/SUCI: ", ueContext.SUPIorSUCI)
+	pingLog.Infof("Register with SUPI/SUCI: %s", ueContext.SUPIorSUCI)
 	// New UE
 	ue := NewRanUeContext(fmt.Sprintf("imsi-%s", ueContext.SUPIorSUCI), 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2,
 		models.AccessType_NON_3_GPP_ACCESS)
