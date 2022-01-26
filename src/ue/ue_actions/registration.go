@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"github.com/google/martian/v3/log"
 	"github.com/matanbroner/UESimulator/src/ue/logger"
 	"github.com/matanbroner/UESimulator/src/ue/ue_context"
 	"github.com/matanbroner/UESimulator/src/ue/ue_nas"
@@ -538,7 +539,7 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 }
 
 func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
-	fmt.Println("Register with SUPI/SUCI: ", ueContext.SUPIorSUCI)
+	log.Infof("Register with SUPI/SUCI: ", ueContext.SUPIorSUCI)
 	// New UE
 	ue := NewRanUeContext(fmt.Sprintf("imsi-%s", ueContext.SUPIorSUCI), 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2,
 		models.AccessType_NON_3_GPP_ACCESS)
@@ -572,15 +573,15 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	}
 	udpConnection := setupUDPSocket(ueContext, pingLog)
 
-	initatorSPI, err := NewIKESecurityAssociation()
+	initiatorSPI, err := NewIKESecurityAssociation()
 	if err != nil {
 		pingLog.Fatal("Erro to generante InitiatorSPI ")
 	} else {
-		pingLog.Infof("New SPI generator %d \n\n", initatorSPI)
+		pingLog.Infof("New SPI generator %d \n\n", initiatorSPI)
 	}
 	// IKE_SA_INIT
 	ikeMessage := new(message.IKEMessage)
-	ikeMessage.BuildIKEHeader(initatorSPI, 0, message.IKE_SA_INIT, message.InitiatorBitCheck, 0)
+	ikeMessage.BuildIKEHeader(initiatorSPI, 0, message.IKE_SA_INIT, message.InitiatorBitCheck, 0)
 
 	// Security Association
 	securityAssociation := ikeMessage.Payloads.BuildSecurityAssociation()
@@ -603,8 +604,8 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	if !ok {
 		pingLog.Fatal("Generate key exchange datd failed")
 	}
-	secert := handler.GenerateRandomNumber()
-	localPublicKeyExchangeValue := new(big.Int).Exp(generator, secert, factor).Bytes()
+	secret := handler.GenerateRandomNumber()
+	localPublicKeyExchangeValue := new(big.Int).Exp(generator, secret, factor).Bytes()
 	prependZero := make([]byte, len(factor.Bytes())-len(localPublicKeyExchangeValue))
 	localPublicKeyExchangeValue = append(prependZero, localPublicKeyExchangeValue...)
 	ikeMessage.Payloads.BUildKeyExchange(message.DH_2048_BIT_MODP, localPublicKeyExchangeValue)
@@ -651,14 +652,14 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 			}
 			remotePublicKeyExchangeValue = remotePublicKeyExchangeValue[i:]
 			remotePublicKeyExchangeValueBig := new(big.Int).SetBytes(remotePublicKeyExchangeValue)
-			sharedKeyExchangeData = new(big.Int).Exp(remotePublicKeyExchangeValueBig, secert, factor).Bytes()
+			sharedKeyExchangeData = new(big.Int).Exp(remotePublicKeyExchangeValueBig, secret, factor).Bytes()
 		case message.TypeNiNr:
 			remoteNonce = ikePayload.(*message.Nonce).NonceData
 		}
 	}
 
 	ikeSecurityAssociation := &context.IKESecurityAssociation{
-		LocalSPI:               initatorSPI,
+		LocalSPI:               initiatorSPI,
 		RemoteSPI:              ikeMessage.ResponderSPI,
 		EncryptionAlgorithm:    proposal.EncryptionAlgorithm[0],
 		IntegrityAlgorithm:     proposal.IntegrityAlgorithm[0],
@@ -674,7 +675,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	// IKE_AUTH
 	ikeMessage.Payloads.Reset()
-	ikeMessage.BuildIKEHeader(initatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 1)
+	ikeMessage.BuildIKEHeader(initiatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 1)
 
 	var ikePayload message.IKEPayloadContainer
 
@@ -750,7 +751,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	// IKE_AUTH - EAP exchange
 	ikeMessage.Payloads.Reset()
-	ikeMessage.BuildIKEHeader(initatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 2)
+	ikeMessage.BuildIKEHeader(initiatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 2)
 
 	ikePayload.Reset()
 
@@ -847,7 +848,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	// IKE_AUTH - EAP exchange
 	ikeMessage.Payloads.Reset()
-	ikeMessage.BuildIKEHeader(initatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 3)
+	ikeMessage.BuildIKEHeader(initiatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 3)
 
 	ikePayload.Reset()
 
@@ -927,7 +928,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	// IKE_AUTH - EAP exchange
 	ikeMessage.Payloads.Reset()
-	ikeMessage.BuildIKEHeader(initatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 4)
+	ikeMessage.BuildIKEHeader(initiatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 4)
 
 	ikePayload.Reset()
 
@@ -987,7 +988,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	// IKE_AUTH - Authentication
 	ikeMessage.Payloads.Reset()
-	ikeMessage.BuildIKEHeader(initatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 5)
+	ikeMessage.BuildIKEHeader(initiatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 5)
 
 	ikePayload.Reset()
 
