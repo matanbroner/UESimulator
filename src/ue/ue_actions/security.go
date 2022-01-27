@@ -51,6 +51,7 @@ func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool
 		fmt.Println("security bearer type", ue.GetBearerType())
 		fmt.Println("security.DirectionUplink", security.DirectionUplink)
 		fmt.Println("payload", payload)
+		fmt.Println("KAMF", ue.Kamf)
 		mac32, err = security.NASMacCalculate(ue.IntegrityAlg, ue.KnasInt, ue.ULCount.Get(), security.BearerNon3GPP,
 			security.DirectionUplink, payload)
 		if err != nil {
