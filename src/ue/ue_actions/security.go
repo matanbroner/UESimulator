@@ -56,6 +56,8 @@ func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool
 			return
 		}
 
+		fmt.Println("Mac32 Calculated in NAS Encode: ", mac32)
+
 		// Add mac value
 		payload = append(mac32, payload[:]...)
 		// Add EPD and Security Type
