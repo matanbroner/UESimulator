@@ -1,6 +1,7 @@
 package ue_actions
 
 import (
+	"encoding/hex"
 	"fmt"
 	"reflect"
 
@@ -56,7 +57,7 @@ func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool
 			return
 		}
 
-		fmt.Println("Mac32 Calculated in NAS Encode: ", mac32)
+		fmt.Println("Mac32 Calculated in NAS Encode: ", hex.EncodeToString(mac32))
 
 		// Add mac value
 		payload = append(mac32, payload[:]...)
