@@ -551,7 +551,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 			Len:    12, // suci
 			Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x68},
 		}
-		ue.AuthenticationSubs = getAuthSubscription2()
+		ue.AuthenticationSubs = getAuthSubscription()
 		ue.AmfUeNgapId = 2
 
 		UE = "eu"
