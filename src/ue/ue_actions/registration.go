@@ -915,7 +915,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		mobileIdentity5GS,
 		nil,
 		ue.GetUESecurityCapability(),
-		nil,
+		ue.Get5GMMCapability(),
 		nil,
 		nil,
 	)

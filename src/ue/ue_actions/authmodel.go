@@ -35,7 +35,7 @@ func init() {
 	TestGenAuthDataTable[SUCCESS_CASE] = &models.AuthenticationInfoRequest{
 		ServingNetworkName: TESTSET_SERVING_NETWORK_NAME,
 	}
-
+	// TODO: IMPORTANT make the SQN change with each request, we must store it in a file or DB
 	// TS 35.208 test set 19
 	MilenageTestSet19 = milenageTestSet{
 		K:      "5122250214c33e723a5dd523fc145fc0",
