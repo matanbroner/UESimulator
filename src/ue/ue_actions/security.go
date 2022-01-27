@@ -30,6 +30,7 @@ func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool
 		}
 
 		sequenceNumber = ue.ULCount.SQN()
+		fmt.Println("SQN for NAS encode: ", sequenceNumber)
 		payload, err = msg.PlainNasEncode()
 		if err != nil {
 			return
