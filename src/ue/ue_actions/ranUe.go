@@ -2,6 +2,7 @@ package ue_actions
 
 import (
 	"encoding/hex"
+	"fmt"
 	"regexp"
 
 	"github.com/calee0219/fatal"
@@ -184,6 +185,8 @@ func (ue *RanUeContext) DerivateKamf(key []byte, snName string, SQN, AK []byte) 
 	Kausf := UeauCommon.GetKDFValue(key, FC, P0, UeauCommon.KDFLen(P0), P1, UeauCommon.KDFLen(P1))
 	P0 = []byte(snName)
 	Kseaf := UeauCommon.GetKDFValue(Kausf, UeauCommon.FC_FOR_KSEAF_DERIVATION, P0, UeauCommon.KDFLen(P0))
+
+	fmt.Println("KSEAF: ", Kseaf)
 
 	supiRegexp, err := regexp.Compile("(?:imsi|supi)-([0-9]{5,15})")
 	if err != nil {
