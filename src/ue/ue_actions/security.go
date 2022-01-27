@@ -67,6 +67,7 @@ func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool
 		payload = append(msgSecurityHeader, payload[:]...)
 
 		// Increase UL Count
+
 		ue.ULCount.AddOne()
 	}
 	return payload, err
