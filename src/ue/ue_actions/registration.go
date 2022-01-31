@@ -1133,11 +1133,10 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		_ = netlink.XfrmStateFlush(netlink.XFRM_PROTO_IPSEC_ANY)
 	}()
 
-	//localTCPAddr := &net.TCPAddr{
-	//	IP:   ueAddr.IP,
-	//	Port: 8080,
-	//}
-	tcpConnWithN3IWF, err := net.DialTCP("tcp", nil, n3iwfNASAddr)
+	localTCPAddr := &net.TCPAddr{
+		IP: ueAddr.IP,
+	}
+	tcpConnWithN3IWF, err := net.DialTCP("tcp", localTCPAddr, n3iwfNASAddr)
 	if err != nil {
 		pingLog.Fatal(err)
 	}
