@@ -1137,7 +1137,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		IP:   ueAddr.IP,
 		Port: 8080,
 	}
-	tcpConnWithN3IWF, err := net.DialTCP("tcp", localTCPAddr, n3iwfNASAddr)
+	tcpConnWithN3IWF, err := net.DialTCP("tcp", nil, n3iwfNASAddr)
 	if err != nil {
 		pingLog.Fatal(err)
 	}
