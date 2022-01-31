@@ -1134,7 +1134,8 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	}()
 
 	localTCPAddr := &net.TCPAddr{
-		IP: ueAddr.IP,
+		IP:   ueAddr.IP,
+		Port: 8080,
 	}
 	tcpConnWithN3IWF, err := net.DialTCP("tcp", localTCPAddr, n3iwfNASAddr)
 	if err != nil {
