@@ -1066,7 +1066,8 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 			if responseConfiguration.ConfigurationType == message.CFG_REPLY {
 				for _, configAttr := range responseConfiguration.ConfigurationAttribute {
 					if configAttr.Type == message.INTERNAL_IP4_ADDRESS {
-						ueAddr.IP = configAttr.Value
+						//ueAddr.IP = configAttr.Value
+						ueAddr.IP = net.ParseIP("192.168.56.102")
 					}
 					if configAttr.Type == message.INTERNAL_IP4_NETMASK {
 						ueAddr.Mask = configAttr.Value
