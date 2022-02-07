@@ -1315,6 +1315,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	}
 
 	// Link address 60.60.0.1/24
+	ueContext.GREIPAddress = "60.60.0.1/24"
 	ipv4 := net.ParseIP(ueContext.GREIPAddress)
 	pingLog.Info("IPV4 for GRE: ", ipv4)
 	linkGREAddr := &netlink.Addr{
