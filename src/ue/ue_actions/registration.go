@@ -1324,7 +1324,9 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		},
 	}
 	if err := netlink.AddrAdd(linkGRE, linkGREAddr); err != nil {
-		pingLog.Fatal(err)
+		if !strings.Contains(fmt.Sprint(err), "file exists") {
+			pingLog.Fatal(err)
+		}
 	}
 	// Set GRE interface up
 	if err := netlink.LinkSetUp(linkGRE); err != nil {
