@@ -13,6 +13,7 @@ import (
 	"hash"
 	"math/big"
 	"net"
+	"strings"
 	"time"
 
 	"github.com/free5gc/CommonConsumerTestData/UDM/TestGenAuthData"
@@ -1291,7 +1292,9 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		Remote: upIPAddr,
 	}
 	if err := netlink.LinkAdd(newGRETunnel); err != nil {
-		pingLog.Fatal(err)
+		if !strings.Contains(fmt.Sprint(err), "file exists") {
+			pingLog.Fatal(err)
+		}
 	}
 	// Get link info
 	links, err = netlink.LinkList()
