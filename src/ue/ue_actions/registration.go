@@ -1343,7 +1343,9 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		},
 	}
 	if err := netlink.RouteAdd(upRoute); err != nil {
-		pingLog.Fatal(err)
+		if !strings.Contains(fmt.Sprint(err), "file exists") {
+			pingLog.Fatal(err)
+		}
 	}
 
 	defer func() {
