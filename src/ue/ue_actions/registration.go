@@ -591,7 +591,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	// ENCR
 	var attributeType uint16 = message.AttributeTypeKeyLength
 	var keyLength uint16 = 256
-	proposal.EncryptionAlgorithm.BuildTransform(message.TypeEncryptionAlgorithm, message.ENCR_AES_CBC, &attributeType, &keyLength, nil)
+	proposal.EncryptionAlgorithm.BuildTransform(message.TypeEncryptionAlgorithm, message.ENCR_NULL, &attributeType, &keyLength, nil)
 	// INTEG
 	proposal.IntegrityAlgorithm.BuildTransform(message.TypeIntegrityAlgorithm, message.AUTH_HMAC_SHA1_96, nil, nil, nil)
 	// PRF
