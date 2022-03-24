@@ -1189,10 +1189,11 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	}
 
 	// Receive N3IWF reply
-	n, _, err = udpConnection.ReadFromUDP(buffer)
+	n, err = tcpConnWithN3IWF.Read(buffer)
 	if err != nil {
 		pingLog.Fatal(err)
 	}
+	pingLog.Infof("Read %d bytes from TCP connetion for PDU sesion establish reply", n)
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
