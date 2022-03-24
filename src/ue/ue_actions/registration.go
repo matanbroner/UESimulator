@@ -1096,12 +1096,14 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatalf("Generate key for child SA failed: %+v", err)
 		return
 	}
+	pingLog.Info("Generated key for CHILD_SA")
 
 	// Aplly XFRM rules
 	if err = applyXFRMRule(true, childSecurityAssociationContext); err != nil {
 		pingLog.Fatalf("Applying XFRM rules failed: %+v", err)
 		return
 	}
+	pingLog.Info("Applied XFRM rules for CHILD_SA")
 
 	// Get link ipsec0
 	links, err := netlink.LinkList()
@@ -1131,6 +1133,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 			pingLog.Fatal(err)
 		}
 	}
+	pingLog.Info("Added IPSec addr. to IPSec link")
 
 	defer func() {
 		_ = netlink.AddrDel(linkIPSec, linkIPSecAddr)
@@ -1161,6 +1164,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatal(err)
 	}
 	_, err = tcpConnWithN3IWF.Write(pdu)
+	pingLog.Info("Sent Reg. Complete to N3IWF")
 	if err != nil {
 		pingLog.Fatal(err)
 	}
@@ -1179,6 +1183,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatal(err)
 	}
 	_, err = tcpConnWithN3IWF.Write(pdu)
+	pingLog.Info("Sent PDU establishment request")
 	if err != nil {
 		pingLog.Fatal(err)
 	}
