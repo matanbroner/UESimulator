@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"github.com/go-ping/ping"
 	"github.com/matanbroner/UESimulator/src/ue/logger"
 	"github.com/matanbroner/UESimulator/src/ue/ue_context"
 	"github.com/matanbroner/UESimulator/src/ue/ue_nas"
@@ -1352,6 +1353,45 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		_ = netlink.LinkSetDown(linkGRE)
 		_ = netlink.LinkDel(linkGRE)
 	}()
+
+	// Ping remote
+	pinger, err := ping.NewPinger("60.60.0.101")
+	if err != nil {
+		pingLog.Fatal(err)
+	}
+
+	// Run with root
+	pinger.SetPrivileged(true)
+
+	pinger.OnRecv = func(pkt *ping.Packet) {
+		pingLog.Fatal("%d bytes from %s: icmp_seq=%d time=%v\n",
+			pkt.Nbytes, pkt.IPAddr, pkt.Seq, pkt.Rtt)
+	}
+	pinger.OnFinish = func(stats *ping.Statistics) {
+		pingLog.Fatal("\n--- %s ping statistics ---\n", stats.Addr)
+		pingLog.Fatal("%d packets transmitted, %d packets received, %v%% packet loss\n",
+			stats.PacketsSent, stats.PacketsRecv, stats.PacketLoss)
+		pingLog.Fatal("round-trip min/avg/max/stddev = %v/%v/%v/%v\n",
+			stats.MinRtt, stats.AvgRtt, stats.MaxRtt, stats.StdDevRtt)
+	}
+
+	pinger.Count = 5
+	pinger.Timeout = 10 * time.Second
+	pinger.Source = "60.60.0.1"
+
+	time.Sleep(3 * time.Second)
+
+	err = pinger.Run()
+	if err != nil {
+		pingLog.Fatal(err)
+	}
+
+	time.Sleep(1 * time.Second)
+
+	stats := pinger.Statistics()
+	if stats.PacketsSent != stats.PacketsRecv {
+		pingLog.Fatal("Ping Failed")
+	}
 
 	time.Sleep(300 * time.Hour)
 
