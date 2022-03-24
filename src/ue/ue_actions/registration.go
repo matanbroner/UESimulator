@@ -1166,15 +1166,17 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	pingLog.Info("7")
 
 	// Receive N3IWF reply
-	n, _, err = udpConnection.ReadFromUDP(buffer)
+	n, err = tcpConnWithN3IWF.Read(buffer)
 	if err != nil {
 		pingLog.Fatal(err)
 	}
+	pingLog.Info("8")
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
 		pingLog.Fatal(err)
 	}
+	pingLog.Info("9")
 	pingLog.Infof("IKE message exchange type: %d", ikeMessage.ExchangeType)
 	pingLog.Infof("IKE message ID: %d", ikeMessage.MessageID)
 	encryptedPayload, ok = ikeMessage.Payloads[0].(*message.Encrypted)
@@ -1186,7 +1188,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatal(err)
 	}
 
-	pingLog.Info("8")
+	pingLog.Info("10")
 
 	var upIPAddr net.IP
 	for _, ikePayload := range decryptedIKEPayload {
