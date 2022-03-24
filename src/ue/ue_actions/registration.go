@@ -1105,7 +1105,9 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	}
 
 	if err := netlink.AddrAdd(linkIPSec, linkIPSecAddr); err != nil {
-		pingLog.Fatalf("Set ipsec0 addr failed: %v", err)
+		if err.Error() != "file exists" {
+			pingLog.Fatalf("Set ipsec0 addr failed: %v", err)
+		}
 	}
 
 	defer func() {
@@ -1166,17 +1168,15 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	pingLog.Info("7")
 
 	// Receive N3IWF reply
-	n, err = tcpConnWithN3IWF.Read(buffer)
+	n, _, err = udpConnection.ReadFromUDP(buffer)
 	if err != nil {
 		pingLog.Fatal(err)
 	}
-	pingLog.Info("8")
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
 		pingLog.Fatal(err)
 	}
-	pingLog.Info("9")
 	pingLog.Infof("IKE message exchange type: %d", ikeMessage.ExchangeType)
 	pingLog.Infof("IKE message ID: %d", ikeMessage.MessageID)
 	encryptedPayload, ok = ikeMessage.Payloads[0].(*message.Encrypted)
@@ -1188,7 +1188,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatal(err)
 	}
 
-	pingLog.Info("10")
+	pingLog.Info("8")
 
 	var upIPAddr net.IP
 	for _, ikePayload := range decryptedIKEPayload {
