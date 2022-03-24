@@ -1076,17 +1076,19 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 			}
 		}
 	}
-
+	pingLog.Info("Creating CHILD_SA context")
 	childSecurityAssociationContext, err := createIKEChildSecurityAssociation(ikeSecurityAssociation.IKEAuthResponseSA)
 	if err != nil {
 		pingLog.Fatalf("Create child security association context failed: %+v", err)
 		return
 	}
+	pingLog.Info("Created CHILD_SA context")
 	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContext, net.ParseIP(ueContext.N3IWFIpAddress), ueContext.IKEBindAddress, responseTrafficSelectorInitiator.TrafficSelectors[0], responseTrafficSelectorResponder.TrafficSelectors[0])
 	if err != nil {
 		pingLog.Fatalf("Parse IP address to child security association failed: %+v", err)
 		return
 	}
+	pingLog.Info("Parsed CHILD_SA IP information")
 	// Select TCP traffic
 	childSecurityAssociationContext.SelectedIPProtocol = unix.IPPROTO_TCP
 
