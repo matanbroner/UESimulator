@@ -14,7 +14,6 @@ import (
 	"hash"
 	"math/big"
 	"net"
-	"strings"
 	"time"
 
 	"github.com/free5gc/CommonConsumerTestData/UDM/TestGenAuthData"
@@ -540,50 +539,25 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 }
 
 func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
-	pingLog.Infof("Register with SUPI/SUCI: %s", ueContext.SUPIorSUCI)
 	// New UE
-	ue := NewRanUeContext(fmt.Sprintf("imsi-%s", ueContext.SUPIorSUCI), 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2,
+	ue := NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2,
 		models.AccessType_NON_3_GPP_ACCESS)
-
-	var UE string
-	var mobileIdentity5GS nasType.MobileIdentity5GS
-
-	if fmt.Sprintf("imsi-%s", ueContext.SUPIorSUCI) == "imsi-2089300007486" {
-		mobileIdentity5GS = nasType.MobileIdentity5GS{
-			Len:    12, // suci
-			Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x68},
-		}
-		ue.AuthenticationSubs = getAuthSubscription()
-		ue.AmfUeNgapId = 2
-
-		UE = "eu"
-
-	} else {
-		mobileIdentity5GS = nasType.MobileIdentity5GS{
-			Len:    12, // suci
-			Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
-		}
-		ue.AuthenticationSubs = getAuthSubscription()
-		ue.AmfUeNgapId = 1
-		UE = "ue"
-		fmt.Printf("SUPI converted: %s", mobileIdentity5GS.GetSUCI())
+	ue.AmfUeNgapId = 1
+	ue.AuthenticationSubs = getAuthSubscription()
+	mobileIdentity5GS := nasType.MobileIdentity5GS{
+		Len:    12, // suci
+		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 
-	n3iwfUDPAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:500", ueContext.N3IWFIpAddress))
+	n3iwfUDPAddr, err := net.ResolveUDPAddr("udp", "192.168.56.101:500")
 	if err != nil {
 		pingLog.Fatal(err)
 	}
 	udpConnection := setupUDPSocket(ueContext, pingLog)
 
-	initiatorSPI, err := NewIKESecurityAssociation()
-	if err != nil {
-		pingLog.Fatal("Erro to generante InitiatorSPI ")
-	} else {
-		pingLog.Infof("New SPI generator %d \n\n", initiatorSPI)
-	}
 	// IKE_SA_INIT
 	ikeMessage := new(message.IKEMessage)
-	ikeMessage.BuildIKEHeader(initiatorSPI, 0, message.IKE_SA_INIT, message.InitiatorBitCheck, 0)
+	ikeMessage.BuildIKEHeader(123123, 0, message.IKE_SA_INIT, message.InitiatorBitCheck, 0)
 
 	// Security Association
 	securityAssociation := ikeMessage.Payloads.BuildSecurityAssociation()
@@ -604,7 +578,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	generator := new(big.Int).SetUint64(handler.Group14Generator)
 	factor, ok := new(big.Int).SetString(handler.Group14PrimeString, 16)
 	if !ok {
-		pingLog.Fatal("Generate key exchange datd failed")
+		pingLog.Fatal("Generate key exchange data failed")
 	}
 	secret := handler.GenerateRandomNumber()
 	localPublicKeyExchangeValue := new(big.Int).Exp(generator, secret, factor).Bytes()
@@ -646,7 +620,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 			pingLog.Info("Get SA payload")
 		case message.TypeKE:
 			remotePublicKeyExchangeValue := ikePayload.(*message.KeyExchange).KeyExchangeData
-			var i = 0
+			var i int = 0
 			for {
 				if remotePublicKeyExchangeValue[i] != 0 {
 					break
@@ -661,7 +635,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	}
 
 	ikeSecurityAssociation := &context.IKESecurityAssociation{
-		LocalSPI:               initiatorSPI,
+		LocalSPI:               123123,
 		RemoteSPI:              ikeMessage.ResponderSPI,
 		EncryptionAlgorithm:    proposal.EncryptionAlgorithm[0],
 		IntegrityAlgorithm:     proposal.IntegrityAlgorithm[0],
@@ -677,12 +651,12 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	// IKE_AUTH
 	ikeMessage.Payloads.Reset()
-	ikeMessage.BuildIKEHeader(initiatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 1)
+	ikeMessage.BuildIKEHeader(123123, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 1)
 
 	var ikePayload message.IKEPayloadContainer
 
 	// Identification
-	ikePayload.BuildIdentificationInitiator(message.ID_FQDN, []byte(UE))
+	ikePayload.BuildIdentificationInitiator(message.ID_FQDN, []byte("UE"))
 
 	// Security Association
 	securityAssociation = ikePayload.BuildSecurityAssociation()
@@ -753,7 +727,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	// IKE_AUTH - EAP exchange
 	ikeMessage.Payloads.Reset()
-	ikeMessage.BuildIKEHeader(initiatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 2)
+	ikeMessage.BuildIKEHeader(123123, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 2)
 
 	ikePayload.Reset()
 
@@ -769,6 +743,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	eapVendorTypeData = append(eapVendorTypeData, anParameters...)
 
 	// NAS
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := ue_nas.RegistrationRequest(
 		nasMessage.RegistrationType5GSInitialRegistration,
 		mobileIdentity5GS,
@@ -842,6 +817,9 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	}
 
 	// Calculate for RES*
+	if decodedNAS == nil {
+		pingLog.Fatal("decodedNas is nil")
+	}
 	rand := decodedNAS.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -850,7 +828,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	// IKE_AUTH - EAP exchange
 	ikeMessage.Payloads.Reset()
-	ikeMessage.BuildIKEHeader(initiatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 3)
+	ikeMessage.BuildIKEHeader(123123, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 3)
 
 	ikePayload.Reset()
 
@@ -916,21 +894,20 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		nasMessage.RegistrationType5GSInitialRegistration,
 		mobileIdentity5GS,
 		nil,
-		ue.GetUESecurityCapability(),
+		ueSecurityCapability,
 		ue.Get5GMMCapability(),
 		nil,
 		nil,
 	)
 	pdu = ue_nas.SecurityModeComplete(registrationRequestWith5GMM)
 	pdu, err = EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCipheredWithNew5gNasSecurityContext, true, true)
-	//assert.Nil(t, err)
 	if err != nil {
-		pingLog.Error("Erro na função que que code pdu session ")
+		pingLog.Fatal(err)
 	}
 
 	// IKE_AUTH - EAP exchange
 	ikeMessage.Payloads.Reset()
-	ikeMessage.BuildIKEHeader(initiatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 4)
+	ikeMessage.BuildIKEHeader(123123, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 4)
 
 	ikePayload.Reset()
 
@@ -990,7 +967,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	// IKE_AUTH - Authentication
 	ikeMessage.Payloads.Reset()
-	ikeMessage.BuildIKEHeader(initiatorSPI, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 5)
+	ikeMessage.BuildIKEHeader(123123, ikeSecurityAssociation.RemoteSPI, message.IKE_AUTH, message.InitiatorBitCheck, 5)
 
 	ikePayload.Reset()
 
@@ -1076,19 +1053,17 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 			}
 		}
 	}
-	pingLog.Info("Creating CHILD_SA context")
+
 	childSecurityAssociationContext, err := createIKEChildSecurityAssociation(ikeSecurityAssociation.IKEAuthResponseSA)
 	if err != nil {
 		pingLog.Fatalf("Create child security association context failed: %+v", err)
 		return
 	}
-	pingLog.Info("Created CHILD_SA context")
-	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContext, net.ParseIP(ueContext.N3IWFIpAddress), ueContext.IKEBindAddress, responseTrafficSelectorInitiator.TrafficSelectors[0], responseTrafficSelectorResponder.TrafficSelectors[0])
+	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContext, net.ParseIP("192.168.56.101"), ueContext.IKEBindAddress, responseTrafficSelectorInitiator.TrafficSelectors[0], responseTrafficSelectorResponder.TrafficSelectors[0])
 	if err != nil {
 		pingLog.Fatalf("Parse IP address to child security association failed: %+v", err)
 		return
 	}
-	pingLog.Info("Parsed CHILD_SA IP information")
 	// Select TCP traffic
 	childSecurityAssociationContext.SelectedIPProtocol = unix.IPPROTO_TCP
 
@@ -1096,14 +1071,12 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatalf("Generate key for child SA failed: %+v", err)
 		return
 	}
-	pingLog.Info("Generated key for CHILD_SA")
 
 	// Aplly XFRM rules
 	if err = applyXFRMRule(true, childSecurityAssociationContext); err != nil {
 		pingLog.Fatalf("Applying XFRM rules failed: %+v", err)
 		return
 	}
-	pingLog.Info("Applied XFRM rules for CHILD_SA")
 
 	// Get link ipsec0
 	links, err := netlink.LinkList()
@@ -1129,15 +1102,11 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	}
 
 	if err := netlink.AddrAdd(linkIPSec, linkIPSecAddr); err != nil {
-		if !strings.Contains(fmt.Sprint(err), "file exists") {
-			pingLog.Fatal(err)
-		}
+		pingLog.Fatalf("Set ipsec0 addr failed: %v", err)
 	}
-	pingLog.Info("Added IPSec addr. to IPSec link")
 
 	defer func() {
 		_ = netlink.AddrDel(linkIPSec, linkIPSecAddr)
-		// NOTE (Matan): The XfrmPolicyFlush() function flags on Mac due to OS mismatch, can be ignored
 		_ = netlink.XfrmPolicyFlush()
 		_ = netlink.XfrmStateFlush(netlink.XFRM_PROTO_IPSEC_ANY)
 	}()
@@ -1164,7 +1133,6 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatal(err)
 	}
 	_, err = tcpConnWithN3IWF.Write(pdu)
-	pingLog.Info("Sent Reg. Complete to N3IWF")
 	if err != nil {
 		pingLog.Fatal(err)
 	}
@@ -1176,30 +1144,26 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		Sst: 1,
 		Sd:  "010203",
 	}
-	// TODO: why is this placed in the initial registration? Should be in the PDU session initializing func
-	pdu = ue_nas.ULNASTransportPDUSessionEstablishmentRequest(ueContext.PDUSessionID, nasMessage.ULNASTransportRequestTypeInitialRequest, ueContext.Dnn, &sNssai)
+	pdu = ue_nas.ULNASTransportPDUSessionEstablishmentRequest(10, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet", &sNssai)
 	pdu, err = EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
 	if err != nil {
 		pingLog.Fatal(err)
 	}
 	_, err = tcpConnWithN3IWF.Write(pdu)
-	pingLog.Info("Sent PDU establishment request")
 	if err != nil {
 		pingLog.Fatal(err)
 	}
 
 	// Receive N3IWF reply
-	n, err = tcpConnWithN3IWF.Read(buffer)
+	n, _, err = udpConnection.ReadFromUDP(buffer)
 	if err != nil {
 		pingLog.Fatal(err)
 	}
-	pingLog.Infof("Read %d bytes from TCP connetion for PDU sesion establish reply", n)
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
 		pingLog.Fatal(err)
 	}
-
 	pingLog.Infof("IKE message exchange type: %d", ikeMessage.ExchangeType)
 	pingLog.Infof("IKE message ID: %d", ikeMessage.MessageID)
 	encryptedPayload, ok = ikeMessage.Payloads[0].(*message.Encrypted)
@@ -1226,7 +1190,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 				pingLog.Info("Received Qos Flow settings")
 			}
 			if notification.NotifyMessageType == message.Vendor3GPPNotifyTypeUP_IP4_ADDRESS {
-				pingLog.Info("UP IP Address: %+v\n", notification.NotificationData)
+				pingLog.Infof("UP IP Address: %+v\n", notification.NotificationData)
 				upIPAddr = notification.NotificationData[:4]
 			}
 		case message.TypeNiNr:
@@ -1274,7 +1238,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatalf("Create child security association context failed: %+v", err)
 		return
 	}
-	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContextUserPlane, net.ParseIP(ueContext.N3IWFIpAddress), ueContext.IKEBindAddress, responseTrafficSelectorResponder.TrafficSelectors[0], responseTrafficSelectorInitiator.TrafficSelectors[0])
+	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContextUserPlane, net.ParseIP("192.168.56.101"), ueContext.IKEBindAddress, responseTrafficSelectorResponder.TrafficSelectors[0], responseTrafficSelectorInitiator.TrafficSelectors[0])
 	if err != nil {
 		pingLog.Fatalf("Parse IP address to child security association failed: %+v", err)
 		return
@@ -1303,9 +1267,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		Remote: upIPAddr,
 	}
 	if err := netlink.LinkAdd(newGRETunnel); err != nil {
-		if !strings.Contains(fmt.Sprint(err), "file exists") {
-			pingLog.Fatal(err)
-		}
+		pingLog.Fatal(err)
 	}
 	// Get link info
 	links, err = netlink.LinkList()
@@ -1324,20 +1286,15 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	if linkGRE == nil {
 		pingLog.Fatal("No link named gretun0")
 	}
-
 	// Link address 60.60.0.1/24
-	ipv4 := net.ParseIP("60.60.0.1")
-	pingLog.Info("IPV4 for GRE: ", ipv4)
 	linkGREAddr := &netlink.Addr{
 		IPNet: &net.IPNet{
-			IP:   ipv4,
+			IP:   net.IPv4(60, 60, 0, 1),
 			Mask: net.IPv4Mask(255, 255, 255, 255),
 		},
 	}
 	if err := netlink.AddrAdd(linkGRE, linkGREAddr); err != nil {
-		if !strings.Contains(fmt.Sprint(err), "file exists") {
-			pingLog.Fatal(err)
-		}
+		pingLog.Fatal(err)
 	}
 	// Set GRE interface up
 	if err := netlink.LinkSetUp(linkGRE); err != nil {
@@ -1352,9 +1309,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		},
 	}
 	if err := netlink.RouteAdd(upRoute); err != nil {
-		if !strings.Contains(fmt.Sprint(err), "file exists") {
-			pingLog.Fatal(err)
-		}
+		pingLog.Fatal(err)
 	}
 
 	defer func() {
@@ -1372,14 +1327,14 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	pinger.SetPrivileged(true)
 
 	pinger.OnRecv = func(pkt *ping.Packet) {
-		pingLog.Fatal("%d bytes from %s: icmp_seq=%d time=%v\n",
+		pingLog.Infof("%d bytes from %s: icmp_seq=%d time=%v\n",
 			pkt.Nbytes, pkt.IPAddr, pkt.Seq, pkt.Rtt)
 	}
 	pinger.OnFinish = func(stats *ping.Statistics) {
-		pingLog.Fatal("\n--- %s ping statistics ---\n", stats.Addr)
-		pingLog.Fatal("%d packets transmitted, %d packets received, %v%% packet loss\n",
+		pingLog.Infof("\n--- %s ping statistics ---\n", stats.Addr)
+		pingLog.Infof("%d packets transmitted, %d packets received, %v%% packet loss\n",
 			stats.PacketsSent, stats.PacketsRecv, stats.PacketLoss)
-		pingLog.Fatal("round-trip min/avg/max/stddev = %v/%v/%v/%v\n",
+		pingLog.Infof("round-trip min/avg/max/stddev = %v/%v/%v/%v\n",
 			stats.MinRtt, stats.AvgRtt, stats.MaxRtt, stats.StdDevRtt)
 	}
 
@@ -1389,10 +1344,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	time.Sleep(3 * time.Second)
 
-	err = pinger.Run()
-	if err != nil {
-		pingLog.Fatal(err)
-	}
+	pinger.Run()
 
 	time.Sleep(1 * time.Second)
 
