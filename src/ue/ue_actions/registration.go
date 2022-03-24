@@ -1084,6 +1084,8 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatal(err)
 	}
 
+	pingLog.Info("1")
+
 	var linkIPSec netlink.Link
 	for _, link := range links {
 		if link.Attrs() != nil {
@@ -1093,6 +1095,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 			}
 		}
 	}
+	pingLog.Info("2")
 	if linkIPSec == nil {
 		pingLog.Fatal("No link named ipsec0")
 	}
@@ -1111,6 +1114,8 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		_ = netlink.XfrmStateFlush(netlink.XFRM_PROTO_IPSEC_ANY)
 	}()
 
+	pingLog.Info("3")
+
 	localTCPAddr := &net.TCPAddr{
 		IP: ueAddr.IP,
 	}
@@ -1126,6 +1131,8 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatal(err)
 	}
 
+	pingLog.Info("4")
+
 	// send NAS Registration Complete Msg
 	pdu = ue_nas.RegistrationComplete(nil)
 	pdu, err = EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
@@ -1136,6 +1143,8 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	if err != nil {
 		pingLog.Fatal(err)
 	}
+
+	pingLog.Info("5")
 
 	time.Sleep(500 * time.Millisecond)
 
@@ -1153,6 +1162,8 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	if err != nil {
 		pingLog.Fatal(err)
 	}
+
+	pingLog.Info("7")
 
 	// Receive N3IWF reply
 	n, _, err = udpConnection.ReadFromUDP(buffer)
@@ -1174,6 +1185,8 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	if err != nil {
 		pingLog.Fatal(err)
 	}
+
+	pingLog.Info("8")
 
 	var upIPAddr net.IP
 	for _, ikePayload := range decryptedIKEPayload {
