@@ -49,9 +49,10 @@ func createIKEChildSecurityAssociation(chosenSecurityAssociation *message.Securi
 	if len(chosenSecurityAssociation.Proposals[0].EncryptionAlgorithm) != 0 {
 		childSecurityAssociation.EncryptionAlgorithm = chosenSecurityAssociation.Proposals[0].EncryptionAlgorithm[0].TransformID
 	}
-	if len(chosenSecurityAssociation.Proposals[0].IntegrityAlgorithm) != 0 {
-		childSecurityAssociation.IntegrityAlgorithm = chosenSecurityAssociation.Proposals[0].IntegrityAlgorithm[0].TransformID
-	}
+	//if len(chosenSecurityAssociation.Proposals[0].IntegrityAlgorithm) != 0 {
+	//	childSecurityAssociation.IntegrityAlgorithm = chosenSecurityAssociation.Proposals[0].IntegrityAlgorithm[0].TransformID
+	//}
+	childSecurityAssociation.IntegrityAlgorithm = 2
 	if len(chosenSecurityAssociation.Proposals[0].ExtendedSequenceNumbers) != 0 {
 		if chosenSecurityAssociation.Proposals[0].ExtendedSequenceNumbers[0].TransformID == 0 {
 			childSecurityAssociation.ESN = false
@@ -465,7 +466,7 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 	xfrmState.Mode = netlink.XFRM_MODE_TUNNEL
 	xfrmState.Spi = int(childSecurityAssociation.SPI)
 	xfrmState.Mark = mark
-	// xfrmState.Auth = xfrmIntegrityAlgorithm
+	xfrmState.Auth = xfrmIntegrityAlgorithm
 	xfrmState.Crypt = xfrmEncryptionAlgorithm
 	xfrmState.ESN = childSecurityAssociation.ESN
 	pingLog.Infof("Setting XFRM with PeerPublicIPAddr %s and LocalPublicIPAddr %s and SPI %d and ESN %s", xfrmState.Src, xfrmState.Dst, int(childSecurityAssociation.SPI), xfrmState.ESN)
