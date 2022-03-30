@@ -445,15 +445,11 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 			Name: handler.XFRMEncryptionAlgorithmType(childSecurityAssociation.EncryptionAlgorithm).String(),
 			Key:  childSecurityAssociation.InitiatorToResponderEncryptionKey,
 		}
-		//if childSecurityAssociation.IntegrityAlgorithm != 0 {
-		//	xfrmIntegrityAlgorithm = &netlink.XfrmStateAlgo{
-		//		Name: handler.XFRMIntegrityAlgorithmType(childSecurityAssociation.IntegrityAlgorithm).String(),
-		//		Key:  childSecurityAssociation.InitiatorToResponderIntegrityKey,
-		//	}
-		//}
-		xfrmIntegrityAlgorithm = &netlink.XfrmStateAlgo{
-			Name: handler.XFRMIntegrityAlgorithmType(message.AUTH_HMAC_MD5_96).String(),
-			Key:  childSecurityAssociation.InitiatorToResponderIntegrityKey,
+		if childSecurityAssociation.IntegrityAlgorithm != 0 {
+			xfrmIntegrityAlgorithm = &netlink.XfrmStateAlgo{
+				Name: handler.XFRMIntegrityAlgorithmType(childSecurityAssociation.IntegrityAlgorithm).String(),
+				Key:  childSecurityAssociation.InitiatorToResponderIntegrityKey,
+			}
 		}
 	}
 
@@ -469,7 +465,7 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 	xfrmState.Mode = netlink.XFRM_MODE_TUNNEL
 	xfrmState.Spi = int(childSecurityAssociation.SPI)
 	xfrmState.Mark = mark
-	xfrmState.Auth = xfrmIntegrityAlgorithm
+	// xfrmState.Auth = xfrmIntegrityAlgorithm
 	xfrmState.Crypt = xfrmEncryptionAlgorithm
 	xfrmState.ESN = childSecurityAssociation.ESN
 	pingLog.Infof("Setting XFRM with PeerPublicIPAddr %s and LocalPublicIPAddr %s and SPI %d and ESN %s", xfrmState.Src, xfrmState.Dst, int(childSecurityAssociation.SPI), xfrmState.ESN)
