@@ -49,10 +49,9 @@ func createIKEChildSecurityAssociation(chosenSecurityAssociation *message.Securi
 	if len(chosenSecurityAssociation.Proposals[0].EncryptionAlgorithm) != 0 {
 		childSecurityAssociation.EncryptionAlgorithm = chosenSecurityAssociation.Proposals[0].EncryptionAlgorithm[0].TransformID
 	}
-	//if len(chosenSecurityAssociation.Proposals[0].IntegrityAlgorithm) != 0 {
-	//	childSecurityAssociation.IntegrityAlgorithm = chosenSecurityAssociation.Proposals[0].IntegrityAlgorithm[0].TransformID
-	//}
-	childSecurityAssociation.IntegrityAlgorithm = 2
+	if len(chosenSecurityAssociation.Proposals[0].IntegrityAlgorithm) != 0 {
+		childSecurityAssociation.IntegrityAlgorithm = chosenSecurityAssociation.Proposals[0].IntegrityAlgorithm[0].TransformID
+	}
 	if len(chosenSecurityAssociation.Proposals[0].ExtendedSequenceNumbers) != 0 {
 		if chosenSecurityAssociation.Proposals[0].ExtendedSequenceNumbers[0].TransformID == 0 {
 			childSecurityAssociation.ESN = false
@@ -474,7 +473,7 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 	// Commit xfrm state to netlink
 	var err error
 	if err = netlink.XfrmStateAdd(xfrmState); err != nil {
-		return fmt.Errorf("set XFRM state rule failed: %+v", err)
+		return fmt.Errorf("set XFRM state rule failed 1: %+v", err)
 	}
 
 	// Policy
@@ -521,10 +520,11 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 	}
 
 	xfrmState.Src, xfrmState.Dst = xfrmState.Dst, xfrmState.Src
+	pingLog.Infof("Src: %v, Dst: %v", xfrmState.Src, xfrmState.Dst)
 
 	// Commit xfrm state to netlink
 	if err = netlink.XfrmStateAdd(xfrmState); err != nil {
-		return fmt.Errorf("set XFRM state rule failed: %+v", err)
+		return fmt.Errorf("set XFRM state rule failed 2: %+v", err)
 	}
 
 	// Policy
