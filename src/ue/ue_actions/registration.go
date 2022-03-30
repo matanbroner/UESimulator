@@ -445,11 +445,15 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 			Name: handler.XFRMEncryptionAlgorithmType(childSecurityAssociation.EncryptionAlgorithm).String(),
 			Key:  childSecurityAssociation.InitiatorToResponderEncryptionKey,
 		}
-		if childSecurityAssociation.IntegrityAlgorithm != 0 {
-			xfrmIntegrityAlgorithm = &netlink.XfrmStateAlgo{
-				Name: handler.XFRMIntegrityAlgorithmType(childSecurityAssociation.IntegrityAlgorithm).String(),
-				Key:  childSecurityAssociation.InitiatorToResponderIntegrityKey,
-			}
+		//if childSecurityAssociation.IntegrityAlgorithm != 0 {
+		//	xfrmIntegrityAlgorithm = &netlink.XfrmStateAlgo{
+		//		Name: handler.XFRMIntegrityAlgorithmType(childSecurityAssociation.IntegrityAlgorithm).String(),
+		//		Key:  childSecurityAssociation.InitiatorToResponderIntegrityKey,
+		//	}
+		//}
+		xfrmIntegrityAlgorithm = &netlink.XfrmStateAlgo{
+			Name: handler.XFRMIntegrityAlgorithmType(childSecurityAssociation.IntegrityAlgorithm).String(),
+			Key:  childSecurityAssociation.InitiatorToResponderIntegrityKey,
 		}
 	}
 
