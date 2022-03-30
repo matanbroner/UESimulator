@@ -452,7 +452,7 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 		//	}
 		//}
 		xfrmIntegrityAlgorithm = &netlink.XfrmStateAlgo{
-			Name: handler.XFRMIntegrityAlgorithmType(childSecurityAssociation.IntegrityAlgorithm).String(),
+			Name: handler.XFRMIntegrityAlgorithmType(2).String(),
 			Key:  childSecurityAssociation.InitiatorToResponderIntegrityKey,
 		}
 	}
