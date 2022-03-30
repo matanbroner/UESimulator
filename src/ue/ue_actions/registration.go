@@ -457,7 +457,6 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 
 	xfrmState.Src = childSecurityAssociation.PeerPublicIPAddr
 	xfrmState.Dst = childSecurityAssociation.LocalPublicIPAddr
-	pingLog.Infof("Setting XFRM with PeerPublicIPAddr %s and LocalPublicIPAddr %s", xfrmState.Src, xfrmState.Dst)
 	xfrmState.Proto = netlink.XFRM_PROTO_ESP
 	xfrmState.Mode = netlink.XFRM_MODE_TUNNEL
 	xfrmState.Spi = int(childSecurityAssociation.SPI)
@@ -465,6 +464,7 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 	xfrmState.Auth = xfrmIntegrityAlgorithm
 	xfrmState.Crypt = xfrmEncryptionAlgorithm
 	xfrmState.ESN = childSecurityAssociation.ESN
+	pingLog.Infof("Setting XFRM with PeerPublicIPAddr %s and LocalPublicIPAddr %s and ESN %s", xfrmState.Src, xfrmState.Dst, xfrmState.ESN)
 
 	// Commit xfrm state to netlink
 	var err error
