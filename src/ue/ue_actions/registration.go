@@ -453,6 +453,10 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 		}
 	}
 
+	pingLog.Infof("CA Enc. Alg. %s", childSecurityAssociation.EncryptionAlgorithm)
+	pingLog.Infof("CA Intg. Alg. %s", childSecurityAssociation.IntegrityAlgorithm)
+	pingLog.Infof("CA InitiatorToResponderEncryptionKey %s", childSecurityAssociation.InitiatorToResponderEncryptionKey)
+
 	xfrmState := new(netlink.XfrmState)
 
 	xfrmState.Src = childSecurityAssociation.PeerPublicIPAddr
@@ -1269,10 +1273,10 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	pingLog.Infof("State function: encr: %d, auth: %d", childSecurityAssociationContextUserPlane.EncryptionAlgorithm, childSecurityAssociationContextUserPlane.IntegrityAlgorithm)
 	// Aplly XFRM rules
-	//if err = applyXFRMRule(false, childSecurityAssociationContextUserPlane); err != nil {
-	//	pingLog.Fatalf("Applying XFRM rules failed: %+v", err)
-	//	return
-	//}
+	if err = applyXFRMRule(false, childSecurityAssociationContextUserPlane); err != nil {
+		pingLog.Fatalf("Applying XFRM rules failed: %+v", err)
+		return
+	}
 
 	// New GRE tunnel interface
 	newGRETunnel := &netlink.Gretun{
