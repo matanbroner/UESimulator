@@ -1361,7 +1361,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 
 	pinger.Count = 5
 	pinger.Timeout = 10 * time.Second
-	pinger.Source = "60.60.0.1"
+	pinger.Source = "60.60.0.101"
 
 	time.Sleep(3 * time.Second)
 
