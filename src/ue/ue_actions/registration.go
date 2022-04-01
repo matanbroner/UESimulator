@@ -1066,7 +1066,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatalf("Create child security association context failed: %+v", err)
 		return
 	}
-	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContext, net.ParseIP("192.168.56.101"), ueContext.IKEBindAddress, responseTrafficSelectorInitiator.TrafficSelectors[0], responseTrafficSelectorResponder.TrafficSelectors[0])
+	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContext, net.ParseIP(ueContext.N3IWFIpAddress), ueContext.IKEBindAddress, responseTrafficSelectorInitiator.TrafficSelectors[0], responseTrafficSelectorResponder.TrafficSelectors[0])
 	if err != nil {
 		pingLog.Fatalf("Parse IP address to child security association failed: %+v", err)
 		return
@@ -1260,7 +1260,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 		pingLog.Fatalf("Create child security association context failed: %+v", err)
 		return
 	}
-	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContextUserPlane, net.ParseIP("192.168.56.101"), ueContext.IKEBindAddress, responseTrafficSelectorResponder.TrafficSelectors[0], responseTrafficSelectorInitiator.TrafficSelectors[0])
+	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContextUserPlane, net.ParseIP(ueContext.N3IWFIpAddress), ueContext.IKEBindAddress, responseTrafficSelectorResponder.TrafficSelectors[0], responseTrafficSelectorInitiator.TrafficSelectors[0])
 	if err != nil {
 		pingLog.Fatalf("Parse IP address to child security association failed: %+v", err)
 		return
