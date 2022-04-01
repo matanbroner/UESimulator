@@ -403,7 +403,7 @@ func parseIPAddressInformationToChildSecurityAssociation(
 	}
 
 	childSecurityAssociation.PeerPublicIPAddr = n3iwfPublicIPAddr.To4()
-	childSecurityAssociation.LocalPublicIPAddr = net.ParseIP("10.0.2.15").To4()
+	childSecurityAssociation.LocalPublicIPAddr = net.ParseIP(ikeBindAddr).To4()
 
 	childSecurityAssociation.TrafficSelectorLocal = net.IPNet{
 		IP:   trafficSelectorLocal.StartAddress,
