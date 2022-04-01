@@ -402,8 +402,8 @@ func parseIPAddressInformationToChildSecurityAssociation(
 		return errors.New("childSecurityAssociation is nil")
 	}
 
-	childSecurityAssociation.PeerPublicIPAddr = n3iwfPublicIPAddr
-	childSecurityAssociation.LocalPublicIPAddr = net.ParseIP(ikeBindAddr)
+	childSecurityAssociation.PeerPublicIPAddr = n3iwfPublicIPAddr.To4()
+	childSecurityAssociation.LocalPublicIPAddr = net.ParseIP(ikeBindAddr).To4()
 
 	childSecurityAssociation.TrafficSelectorLocal = net.IPNet{
 		IP:   trafficSelectorLocal.StartAddress,
