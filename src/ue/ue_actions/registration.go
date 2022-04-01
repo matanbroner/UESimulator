@@ -473,9 +473,9 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 
 	// Commit xfrm state to netlink
 	var err error
-	if err = netlink.XfrmStateAdd(xfrmState); err != nil {
-		return fmt.Errorf("set XFRM state rule failed 1: %+v", err)
-	}
+	//if err = netlink.XfrmStateAdd(xfrmState); err != nil {
+	//	return fmt.Errorf("set XFRM state rule failed 1: %+v", err)
+	//}
 
 	// Policy
 	xfrmPolicyTemplate := netlink.XfrmPolicyTmpl{
