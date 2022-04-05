@@ -1057,7 +1057,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 			if responseConfiguration.ConfigurationType == message.CFG_REPLY {
 				for _, configAttr := range responseConfiguration.ConfigurationAttribute {
 					if configAttr.Type == message.INTERNAL_IP4_ADDRESS {
-						ueAddr.IP = configAttr.Value
+						ueAddr.IP = net.ParseIP("192.168.56.103")
 					}
 					if configAttr.Type == message.INTERNAL_IP4_NETMASK {
 						ueAddr.Mask = configAttr.Value
@@ -1086,10 +1086,10 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	}
 
 	// Aplly XFRM rules
-	//if err = applyXFRMRule(true, childSecurityAssociationContext); err != nil {
-	//	pingLog.Fatalf("Applying XFRM rules failed: %+v", err)
-	//	return
-	//}
+	if err = applyXFRMRule(true, childSecurityAssociationContext); err != nil {
+		pingLog.Fatalf("Applying XFRM rules failed: %+v", err)
+		return
+	}
 
 	// Get link ipsec0
 	links, err := netlink.LinkList()
