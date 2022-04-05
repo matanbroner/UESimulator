@@ -501,6 +501,8 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 		xfrmPolicyTemplate,
 	}
 
+	pingLog.Infof("XFRM Policy string: %s\n", xfrmPolicy.String())
+
 	// Commit xfrm policy to netlink
 	if err = netlink.XfrmPolicyAdd(xfrmPolicy); err != nil {
 		return fmt.Errorf("set XFRM policy rule failed: %+v", err)
@@ -523,6 +525,8 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 	xfrmState.Src, xfrmState.Dst = xfrmState.Dst, xfrmState.Src
 	pingLog.Infof("Src: %v, Dst: %v", xfrmState.Src, xfrmState.Dst)
 
+	pingLog.Infof("XFRM state string: %s", xfrmState.String())
+
 	// Commit xfrm state to netlink
 	if err = netlink.XfrmStateAdd(xfrmState); err != nil {
 		return fmt.Errorf("set XFRM state rule failed 2: %+v", err)
@@ -536,6 +540,8 @@ func applyXFRMRule(ueIsInitiator bool, childSecurityAssociation *context.ChildSe
 	xfrmPolicy.Tmpls = []netlink.XfrmPolicyTmpl{
 		xfrmPolicyTemplate,
 	}
+
+	pingLog.Infof("XFRM Policy string: %s\n", xfrmPolicy.String())
 
 	// Commit xfrm policy to netlink
 	if err = netlink.XfrmPolicyAdd(xfrmPolicy); err != nil {

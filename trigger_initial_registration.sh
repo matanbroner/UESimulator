@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ue_addr=${ue_addr:-"192.168.56.103"}
+ue_addr=${ue_addr:-"127.0.0.1"}
 ue_port=${ue_port:-"10000"}
 scheme=${scheme:-"http"}
 auth_method=${auth_method:-"5G_AKA"}
