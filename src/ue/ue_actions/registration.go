@@ -1086,10 +1086,10 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	}
 
 	// Aplly XFRM rules
-	if err = applyXFRMRule(true, childSecurityAssociationContext); err != nil {
-		pingLog.Fatalf("Applying XFRM rules failed: %+v", err)
-		return
-	}
+	//if err = applyXFRMRule(true, childSecurityAssociationContext); err != nil {
+	//	pingLog.Fatalf("Applying XFRM rules failed: %+v", err)
+	//	return
+	//}
 
 	// Get link ipsec0
 	links, err := netlink.LinkList()
