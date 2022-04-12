@@ -1133,8 +1133,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	pingLog.Info("3")
 
 	localTCPAddr := &net.TCPAddr{
-		IP:   ueAddr.IP,
-		Port: 5000,
+		IP: ueAddr.IP,
 	}
 	tcpConnWithN3IWF, err := net.DialTCP("tcp", localTCPAddr, n3iwfNASAddr)
 	if err != nil {
