@@ -4,6 +4,11 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"hash"
+	"math/big"
+	"net"
+	"time"
+
 	"github.com/go-ping/ping"
 	"github.com/matanbroner/UESimulator/src/ue/logger"
 	"github.com/matanbroner/UESimulator/src/ue/ue_context"
@@ -11,10 +16,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink"
 	"golang.org/x/sys/unix"
-	"hash"
-	"math/big"
-	"net"
-	"time"
 
 	"github.com/free5gc/CommonConsumerTestData/UDM/TestGenAuthData"
 	"github.com/free5gc/n3iwf/context"
@@ -1057,7 +1058,7 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 			if responseConfiguration.ConfigurationType == message.CFG_REPLY {
 				for _, configAttr := range responseConfiguration.ConfigurationAttribute {
 					if configAttr.Type == message.INTERNAL_IP4_ADDRESS {
-						ueAddr.IP = net.ParseIP("192.168.56.103")
+						ueAddr.IP = configAttr.Value
 					}
 					if configAttr.Type == message.INTERNAL_IP4_NETMASK {
 						ueAddr.Mask = configAttr.Value
@@ -1132,7 +1133,8 @@ func InitialRegistrationProcedure(ueContext *ue_context.UEContext) {
 	pingLog.Info("3")
 
 	localTCPAddr := &net.TCPAddr{
-		IP: ueAddr.IP,
+		IP:   ueAddr.IP,
+		Port: 5000,
 	}
 	tcpConnWithN3IWF, err := net.DialTCP("tcp", localTCPAddr, n3iwfNASAddr)
 	if err != nil {
